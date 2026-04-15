@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Sukuma Wiki">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#418c42"/>
+      <stop offset="100%" stop-color="#d7efd6"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#215223" font-size="22" font-family="Arial, sans-serif" font-weight="700">GREENS</text>
+  <path d="M320 372 C222 310, 212 198, 320 118 C428 198, 418 310, 320 372 Z" fill="rgba(255,255,255,0.9)"/><path d="M320 352 C320 282, 320 206, 320 130" stroke="rgba(77,120,77,0.45)" stroke-width="12"/><path d="M318 228 C280 212, 252 190, 234 162" stroke="rgba(77,120,77,0.32)" stroke-width="8" fill="none"/><path d="M322 230 C360 214, 388 192, 406 164" stroke="rgba(77,120,77,0.32)" stroke-width="8" fill="none"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">SUKUMA WIKI</text>
+</svg>

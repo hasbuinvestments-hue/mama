@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Carrots">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f08b2d"/>
+      <stop offset="100%" stop-color="#ffd8ab"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#8e4f05" font-size="22" font-family="Arial, sans-serif" font-weight="700">VEGETABLES</text>
+  <path d="M322 130 C378 192, 394 266, 322 376 C250 268, 266 194, 322 130 Z" fill="rgba(255,255,255,0.92)"/><path d="M322 128 L292 88 M322 128 L322 74 M322 128 L352 88" stroke="#6ba85b" stroke-width="12" stroke-linecap="round"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">CARROTS</text>
+</svg>

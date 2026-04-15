@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Watermelon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ef6271"/>
+      <stop offset="100%" stop-color="#ffcdd4"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#8c2531" font-size="22" font-family="Arial, sans-serif" font-weight="700">FRUIT</text>
+  <path d="M206 316 A114 114 0 0 1 434 316 Z" fill="rgba(255,255,255,0.9)"/><path d="M206 316 A114 114 0 0 0 434 316" stroke="#6eb15b" stroke-width="18" fill="none"/><circle cx="274" cy="274" r="7" fill="#5b2a2a"/><circle cx="320" cy="246" r="7" fill="#5b2a2a"/><circle cx="366" cy="274" r="7" fill="#5b2a2a"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">WATERMELON</text>
+</svg>

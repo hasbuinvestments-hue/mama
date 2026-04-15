@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Mangoes">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f2a13f"/>
+      <stop offset="100%" stop-color="#ffdcae"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#8a5000" font-size="22" font-family="Arial, sans-serif" font-weight="700">FRUIT</text>
+  <path d="M250 164 C324 124, 420 160, 430 246 C438 326, 384 384, 310 380 C248 376, 198 320, 198 256 C198 214, 218 182, 250 164 Z" fill="rgba(255,255,255,0.9)"/><path d="M328 130 C344 102, 370 92, 394 96" stroke="#6ca05a" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">MANGOES</text>
+</svg>

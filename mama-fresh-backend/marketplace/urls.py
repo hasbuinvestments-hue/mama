@@ -1,0 +1,38 @@
+from django.urls import path
+from .views import (
+    OrderCreateView, AdminOrderListView, OrderDetailView,
+    VendorListView, VendorDetailView,
+    CategoryListView,
+    ProductListView, ProductDetailView,
+    AnalyticsView,
+    PackageListCreateView, PackageDetailView,
+    CustomerOrderHistoryView,
+    TestimonialListView, TestimonialDetailView,
+    CollectionListView, CollectionDetailView,
+    MixListView, MixDetailView,
+)
+
+urlpatterns = [
+    path('orders/', OrderCreateView.as_view(), name='order-create'),
+    path('orders/history/', CustomerOrderHistoryView.as_view(), name='order-history'),
+    path('admin/orders/', AdminOrderListView.as_view(), name='admin-order-list'),
+    path('admin/orders/<str:order_id>/', OrderDetailView.as_view(), name='admin-order-detail'),
+    path('admin/analytics/', AnalyticsView.as_view(), name='admin-analytics'),
+    path('admin/packages/', PackageListCreateView.as_view(), name='admin-package-list'),
+    path('admin/packages/<int:pk>/', PackageDetailView.as_view(), name='admin-package-detail'),
+    path('admin/testimonials/', TestimonialListView.as_view(), name='admin-testimonial-list'),
+    path('admin/testimonials/<int:pk>/', TestimonialDetailView.as_view(), name='admin-testimonial-detail'),
+    path('admin/collections/', CollectionListView.as_view(), name='admin-collection-list'),
+    path('admin/collections/<int:pk>/', CollectionDetailView.as_view(), name='admin-collection-detail'),
+    path('admin/mixes/', MixListView.as_view(), name='admin-mix-list'),
+    path('admin/mixes/<int:pk>/', MixDetailView.as_view(), name='admin-mix-detail'),
+    path('vendors/', VendorListView.as_view(), name='vendor-list'),
+    path('vendors/<int:pk>/', VendorDetailView.as_view(), name='vendor-detail'),
+    path('categories/', CategoryListView.as_view(), name='category-list'),
+    path('products/', ProductListView.as_view(), name='product-list'),
+    path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
+    path('packages/', PackageListCreateView.as_view(), name='package-list'),
+    path('testimonials/', TestimonialListView.as_view(), name='testimonial-list'),
+    path('collections/', CollectionListView.as_view(), name='collection-list'),
+    path('mixes/', MixListView.as_view(), name='mix-list'),
+]

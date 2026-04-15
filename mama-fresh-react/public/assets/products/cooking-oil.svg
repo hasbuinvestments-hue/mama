@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Cooking Oil">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e9c34b"/>
+      <stop offset="100%" stop-color="#fcecb0"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#876400" font-size="22" font-family="Arial, sans-serif" font-weight="700">PANTRY</text>
+  <rect x="264" y="136" width="112" height="204" rx="34" fill="rgba(255,255,255,0.9)"/><rect x="286" y="88" width="68" height="64" rx="16" fill="rgba(255,255,255,0.78)"/><rect x="296" y="62" width="48" height="32" rx="10" fill="rgba(255,255,255,0.66)"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">COOKING OIL</text>
+</svg>

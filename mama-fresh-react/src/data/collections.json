@@ -1,0 +1,26 @@
+[
+  {
+    "id": "weekly-essentials",
+    "title": "Weekly Essentials",
+    "description": "Quick restock for everyday cooking.",
+    "productIds": ["tomatoes", "onions", "potatoes", "sukuma", "maize-flour", "cooking-oil"]
+  },
+  {
+    "id": "juice-favorites",
+    "title": "Juice Favorites",
+    "description": "Bright produce combinations for blending and pressing.",
+    "productIds": ["carrots", "pineapple", "ginger", "apples", "cucumber", "lemon"]
+  },
+  {
+    "id": "family-restock",
+    "title": "Family Restock",
+    "description": "Staples and fresh produce for a fuller household basket.",
+    "productIds": ["rice", "beans", "maize-flour", "tomatoes", "spinach", "bananas"]
+  },
+  {
+    "id": "event-cooking",
+    "title": "Event Cooking Basics",
+    "description": "Popular cooking ingredients for gatherings and functions.",
+    "productIds": ["tomatoes", "onions", "potatoes", "cabbage", "cooking-oil", "cilantro"]
+  }
+]

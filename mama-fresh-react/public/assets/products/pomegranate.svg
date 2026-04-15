@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Pomegranate">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#b1162a"/>
+      <stop offset="100%" stop-color="#f2bcc6"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#670b18" font-size="22" font-family="Arial, sans-serif" font-weight="700">FRUIT</text>
+  <circle cx="320" cy="244" r="118" fill="rgba(255,255,255,0.92)"/><path d="M280 128 L296 94 L320 122 L344 94 L360 128 Z" fill="rgba(255,255,255,0.82)"/><circle cx="286" cy="246" r="12" fill="rgba(177,22,42,0.2)"/><circle cx="334" cy="278" r="12" fill="rgba(177,22,42,0.2)"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">POMEGRANATE</text>
+</svg>

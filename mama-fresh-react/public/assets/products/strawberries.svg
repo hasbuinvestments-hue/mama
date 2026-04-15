@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Strawberries">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ec4b6d"/>
+      <stop offset="100%" stop-color="#ffc6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#8e1834" font-size="22" font-family="Arial, sans-serif" font-weight="700">FRUIT</text>
+  <path d="M320 150 C396 150, 424 234, 404 296 C386 350, 352 392, 320 410 C288 392, 254 350, 236 296 C216 234, 244 150, 320 150 Z" fill="rgba(255,255,255,0.92)"/><path d="M320 150 L286 114 M320 150 L354 114 M320 150 L252 138 M320 150 L388 138" stroke="#6fab58" stroke-width="10" stroke-linecap="round"/><circle cx="284" cy="246" r="6" fill="rgba(236,75,109,0.32)"/><circle cx="340" cy="280" r="6" fill="rgba(236,75,109,0.32)"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">STRAWBERRIES</text>
+</svg>

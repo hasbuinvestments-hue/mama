@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Cilantro">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#349a50"/>
+      <stop offset="100%" stop-color="#d4efd8"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#1d5a30" font-size="22" font-family="Arial, sans-serif" font-weight="700">HERBS</text>
+  <path d="M320 348 C296 270, 296 178, 320 122" stroke="rgba(255,255,255,0.9)" stroke-width="10" fill="none" stroke-linecap="round"/><ellipse cx="270" cy="226" rx="42" ry="74" fill="rgba(255,255,255,0.86)" transform="rotate(-34 270 226)"/><ellipse cx="368" cy="214" rx="42" ry="74" fill="rgba(255,255,255,0.78)" transform="rotate(30 368 214)"/><ellipse cx="320" cy="170" rx="34" ry="62" fill="rgba(255,255,255,0.7)"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">CILANTRO</text>
+</svg>

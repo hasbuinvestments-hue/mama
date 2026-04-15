@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Ginger">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c78951"/>
+      <stop offset="100%" stop-color="#f3d6b7"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#7b4a23" font-size="22" font-family="Arial, sans-serif" font-weight="700">PANTRY</text>
+  <path d="M218 246 C218 196, 270 180, 302 204 C300 166, 340 146, 372 168 C388 178, 400 196, 398 224 C446 220, 478 252, 472 292 C466 336, 428 360, 390 356 C376 394, 330 408, 296 390 C274 378, 258 354, 260 328 C230 322, 208 290, 218 246 Z" fill="rgba(255,255,255,0.9)"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">GINGER</text>
+</svg>

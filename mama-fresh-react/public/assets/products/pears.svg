@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Pears">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9dc44f"/>
+      <stop offset="100%" stop-color="#e5f5bb"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#56731e" font-size="22" font-family="Arial, sans-serif" font-weight="700">FRUIT</text>
+  <path d="M322 124 C358 124, 382 152, 378 194 C448 224, 458 352, 320 392 C182 352, 192 224, 262 194 C258 152, 284 124, 322 124 Z" fill="rgba(255,255,255,0.9)"/><path d="M322 124 C326 98, 340 80, 362 74" stroke="#67964d" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">PEARS</text>
+</svg>

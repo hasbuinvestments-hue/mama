@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Celery">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#77b957"/>
+      <stop offset="100%" stop-color="#dbf3cb"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#3f6826" font-size="22" font-family="Arial, sans-serif" font-weight="700">GREENS</text>
+  <rect x="220" y="126" width="34" height="220" rx="16" fill="rgba(255,255,255,0.88)"/><rect x="304" y="110" width="34" height="236" rx="16" fill="rgba(255,255,255,0.96)"/><rect x="388" y="126" width="34" height="220" rx="16" fill="rgba(255,255,255,0.82)"/><path d="M236 132 C208 112, 206 88, 230 74" stroke="#5f9852" stroke-width="10" fill="none"/><path d="M320 110 C292 84, 288 56, 318 42" stroke="#5f9852" stroke-width="10" fill="none"/><path d="M404 132 C434 108, 438 84, 412 72" stroke="#5f9852" stroke-width="10" fill="none"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">CELERY</text>
+</svg>

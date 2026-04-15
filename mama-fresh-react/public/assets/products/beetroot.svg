@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Beetroot">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9f2042"/>
+      <stop offset="100%" stop-color="#f0b5c4"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <circle cx="544" cy="88" r="92" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="94" cy="396" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="42" y="38" width="188" height="42" rx="16" fill="rgba(255,255,255,0.22)"/>
+  <text x="60" y="66" fill="#5d1231" font-size="22" font-family="Arial, sans-serif" font-weight="700">VEGETABLES</text>
+  <path d="M320 144 C396 144, 444 204, 438 274 C430 356, 372 392, 320 420 C268 392, 210 356, 202 274 C196 204, 244 144, 320 144 Z" fill="rgba(255,255,255,0.92)"/><path d="M320 144 L290 98 M320 144 L352 98 M320 144 L252 116" stroke="#6fa85e" stroke-width="12" stroke-linecap="round"/>
+  <text x="48" y="430" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="800">BEETROOT</text>
+</svg>
