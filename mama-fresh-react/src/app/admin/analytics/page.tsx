@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, TrendingUp, Users, Leaf, Trees } from "lucide-react";
+import { useEffect, useState } from "react";
+import { TrendingUp, Users, Leaf, Trees } from "lucide-react";
 
 interface VendorEquity {
   name: string;
@@ -41,23 +40,14 @@ export default function AnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 py-6 sticky top-0 z-50">
-        <div className="container mx-auto px-6 max-w-5xl flex items-center justify-between">
-          <div>
-            <span className="text-primary font-black uppercase tracking-widest text-xs mb-1 block">Fellowship Tracker</span>
-            <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-              <Trees className="h-6 w-6 text-primary" />
-              Impact Analytics
-            </h1>
-          </div>
-          <Link href="/admin/orders" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
-            <ArrowLeft className="h-4 w-4" /> Back to Orders
-          </Link>
+      <main className="container mx-auto px-6 max-w-5xl pt-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+            <Trees className="h-6 w-6 text-primary" />
+            Impact Analytics
+          </h1>
+          <span className="text-xs font-bold text-primary uppercase tracking-widest">Fellowship Tracker</span>
         </div>
-      </header>
-
-      <main className="container mx-auto px-6 max-w-5xl pt-12">
         {/* Top Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="bg-white rounded-3xl p-8 border border-emerald-100 shadow-sm relative overflow-hidden">

@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Pencil, X, Check, Package } from "lucide-react";
+import { Plus, Trash2, Pencil, X, Check, Package } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -115,30 +114,18 @@ export default function AdminPackagesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 py-6 sticky top-0 z-50">
-        <div className="container mx-auto px-6 max-w-5xl flex items-center justify-between">
-          <div>
-            <span className="text-primary font-black uppercase tracking-widest text-xs mb-1 block">Admin</span>
-            <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-              <Package className="h-6 w-6 text-primary" /> Package Manager
-            </h1>
-          </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setForm(emptyPkg())}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white font-bold text-sm hover:bg-emerald-700 transition-colors"
-            >
-              <Plus className="h-4 w-4" /> New Package
-            </button>
-            <Link href="/admin/orders" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
-              <ArrowLeft className="h-4 w-4" /> Orders
-            </Link>
-          </div>
+      <main className="container mx-auto px-6 max-w-5xl pt-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+            <Package className="h-6 w-6 text-primary" /> Package Manager
+          </h1>
+          <button
+            onClick={() => setForm(emptyPkg())}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white font-bold text-sm hover:bg-emerald-700 transition-colors"
+          >
+            <Plus className="h-4 w-4" /> New Package
+          </button>
         </div>
-      </header>
-
-      <main className="container mx-auto px-6 max-w-5xl pt-10">
         {loading ? (
           <div className="text-center text-primary font-bold animate-pulse py-20">Loading packages...</div>
         ) : packages.length === 0 ? (

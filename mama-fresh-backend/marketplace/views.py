@@ -160,8 +160,12 @@ class AnalyticsView(APIView):
         })
 
 
-class TestimonialListView(generics.ListCreateAPIView):
+class TestimonialListView(generics.ListAPIView):
     queryset = Testimonial.objects.filter(is_active=True).order_by('-created_at')
+    serializer_class = TestimonialSerializer
+
+class AdminTestimonialListView(generics.ListCreateAPIView):
+    queryset = Testimonial.objects.all().order_by('-created_at')
     serializer_class = TestimonialSerializer
 
 class TestimonialDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -169,8 +173,12 @@ class TestimonialDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TestimonialSerializer
 
 
-class CollectionListView(generics.ListCreateAPIView):
+class CollectionListView(generics.ListAPIView):
     queryset = Collection.objects.filter(is_active=True).order_by('order')
+    serializer_class = CollectionSerializer
+
+class AdminCollectionListView(generics.ListCreateAPIView):
+    queryset = Collection.objects.all().order_by('order')
     serializer_class = CollectionSerializer
 
 class CollectionDetailView(generics.RetrieveUpdateDestroyAPIView):

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Phone, MapPin, Send, CheckCircle, ChevronRight, User, Store, RefreshCw } from "lucide-react";
 
+
 interface Order {
   order_id: string;
   customer_name: string;
@@ -100,27 +101,13 @@ export default function AdminOrdersPage() {
               Order Hub
             </h1>
           </div>
-          <div className="flex gap-4">
-            <a
-              href="/admin/packages"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors"
-            >
-              Manage Packages
-            </a>
-            <a
-              href="/admin/analytics"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-sm hover:bg-emerald-100 transition-colors"
-            >
-              Impact Analytics
-            </a>
-            <button 
-              onClick={fetchOrders}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors"
-            >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </button>
-          </div>
+          <button
+            onClick={fetchOrders}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors"
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
