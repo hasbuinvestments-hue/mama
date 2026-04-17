@@ -13,6 +13,7 @@ function SuccessContent() {
   const [mpesaCode, setMpesaCode] = React.useState("");
   const [codeSaved, setCodeSaved] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
+  const [referralCode, setReferralCode] = React.useState("");
 
 
   const submitMpesaCode = async () => {
@@ -47,10 +48,18 @@ function SuccessContent() {
           console.error(err);
           setLoading(false);
         });
+
+      // Fetch personal referral code
+      if (orderData?.customer_phone) {
+         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/referral/?phone=${orderData.customer_phone}`)
+           .then(res => res.json())
+           .then(d => setReferralCode(d.code))
+           .catch(() => {});
+      }
     } else {
       setLoading(false);
     }
-  }, [orderId]);
+  }, [orderId, orderData?.customer_phone]);
 
   return (
     <div className="min-h-screen bg-fresh-bg flex items-center justify-center p-6 py-12">
@@ -174,6 +183,37 @@ function SuccessContent() {
             </p>
           </div>
         </div>
+
+        {referralCode && (
+           <div className="mb-8 p-8 bg-gradient-to-br from-gray-900 to-emerald-950 rounded-[3rem] text-white text-left relative overflow-hidden shadow-2xl">
+              <div className="relative z-10">
+                 <div className="flex items-center gap-2 mb-4">
+                    <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Referral Bonus</span>
+                 </div>
+                 <h3 className="text-xl font-black mb-2">Gift KES 50 to a friend</h3>
+                 <p className="text-gray-400 text-sm font-medium mb-6 leading-relaxed">
+                    Share your unique code. When they place their first order, they get KES 50 off and <span className="text-white font-bold">you get KES 50 too!</span>
+                 </p>
+                 
+                 <div className="flex items-center gap-3">
+                    <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4 font-black text-2xl tracking-[0.3em] text-center text-primary uppercase">
+                       {referralCode}
+                    </div>
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(referralCode);
+                        alert("Referral code copied!");
+                      }}
+                      className="h-14 w-14 bg-white rounded-2xl flex items-center justify-center text-gray-900 hover:scale-105 active:scale-95 transition-all shadow-lg"
+                    >
+                       <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    </button>
+                 </div>
+              </div>
+              <div className="absolute -bottom-10 -right-10 h-40 w-40 bg-primary/20 rounded-full blur-3xl" />
+           </div>
+        )}
 
         <div className="flex flex-col gap-4">
           <Link

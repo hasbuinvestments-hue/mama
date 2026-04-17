@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Package, Clock, CheckCircle, XCircle, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
+import { Package, Clock, CheckCircle, XCircle, TrendingUp, ChevronDown, ChevronUp, AlertTriangle, Send, Check } from "lucide-react";
+import { OrderBatch } from "@/types";
 
 interface OrderItem {
   name: string;
@@ -20,6 +21,7 @@ interface Order {
   mpesa_code: string | null;
   items: OrderItem[];
   created_at: string;
+  batch_detail?: OrderBatch;
 }
 
 interface FrequentItem {
@@ -29,7 +31,7 @@ interface FrequentItem {
 
 type Tab = "ALL" | "PENDING" | "CONFIRMED" | "CANCELLED";
 
-const STATUS_CONFIG: Record<string, { label: string; icon: React.ReactNode; bg: string; text: string }> = {
+const STATUS_CONFIG: Record<string, { label: string; icon: React.JSX.Element; bg: string; text: string }> = {
   PENDING: {
     label: "Pending",
     icon: <Clock className="h-3.5 w-3.5" />,
@@ -56,6 +58,9 @@ export default function OrderHistoryPage() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("ALL");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [complaintForm, setComplaintForm] = useState<{ orderId: string; product: string; reason: string } | null>(null);
+  const [submittingComplaint, setSubmittingComplaint] = useState(false);
+  const [complaintSent, setComplaintSent] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/history/`)
@@ -67,6 +72,29 @@ export default function OrderHistoryPage() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  const submitComplaint = async () => {
+    if (!complaintForm) return;
+    setSubmittingComplaint(true);
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/complaints/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order: complaintForm.orderId,
+          product_name: complaintForm.product,
+          reason: complaintForm.reason,
+          vendor: 1,
+        }),
+      });
+      setComplaintSent(complaintForm.orderId);
+      setComplaintForm(null);
+    } catch {
+      alert("Failed to submit complaint.");
+    } finally {
+      setSubmittingComplaint(false);
+    }
+  };
 
   const filtered = tab === "ALL" ? orders : orders.filter(o => o.status === tab);
 
@@ -217,6 +245,42 @@ export default function OrderHistoryPage() {
                     </div>
                   </button>
 
+                  {/* Tracking Progress Bar */}
+                  {order.batch_detail && order.status !== 'CANCELLED' && (
+                    <div className="px-5 py-6 bg-fresh-bg/30 border-t border-gray-50">
+                        <div className="relative flex justify-between items-center max-w-sm mx-auto">
+                            {/* Lines */}
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 w-full bg-gray-200 -z-10" />
+                            <div 
+                                className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-primary transition-all duration-1000 -z-10" 
+                                style={{ width: 
+                                    order.batch_detail.dispatched_to_customers_at ? '100%' :
+                                    order.batch_detail.arrived_nairobi_at ? '66%' :
+                                    order.batch_detail.pickup_confirmed_at ? '33%' : '0%'
+                                }}
+                            />
+
+                            {[
+                                { id: 'placed', label: 'Placed', active: true },
+                                { id: 'picked', label: 'Picked Up', active: !!order.batch_detail.pickup_confirmed_at },
+                                { id: 'transit', label: 'In Transit', active: !!order.batch_detail.arrived_nairobi_at },
+                                { id: 'delivered', label: 'Delivered', active: order.batch_detail.status === 'DELIVERED' }
+                            ].map((step, idx) => (
+                                <div key={step.id} className="flex flex-col items-center gap-1.5">
+                                    <div className={`h-4 w-4 rounded-full border-2 transition-all ${
+                                        step.active ? 'bg-primary border-primary scale-125' : 'bg-white border-gray-300'
+                                    }`}>
+                                        {step.active && <Check className="h-2.5 w-2.5 text-white mx-auto mt-0.5" />}
+                                    </div>
+                                    <span className={`text-[9px] font-black uppercase tracking-tighter ${step.active ? 'text-primary' : 'text-gray-400'}`}>
+                                        {step.label}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                  )}
+
                   {/* Expanded Items */}
                   {isExpanded && (
                     <div className="px-5 pb-5 border-t border-gray-50 pt-4">
@@ -238,6 +302,59 @@ export default function OrderHistoryPage() {
                           <p className="text-xs text-gray-500 font-medium">
                             M-Pesa Code: <span className="font-black text-gray-800 tracking-widest">{order.mpesa_code}</span>
                           </p>
+                        </div>
+                      )}
+                      {/* Complaint Section */}
+                      {complaintSent === order.order_id ? (
+                        <div className="mt-4 pt-4 border-t border-gray-50 flex items-center gap-2 text-green-600">
+                          <CheckCircle className="h-4 w-4" />
+                          <span className="text-xs font-bold">Complaint submitted — we'll follow up shortly.</span>
+                        </div>
+                      ) : complaintForm?.orderId === order.order_id ? (
+                        <div className="mt-4 pt-4 border-t border-gray-50 space-y-3">
+                          <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">Report an Issue</p>
+                          <select
+                            value={complaintForm.product}
+                            onChange={e => setComplaintForm(f => f ? { ...f, product: e.target.value } : f)}
+                            className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm font-medium focus:border-primary focus:outline-none"
+                          >
+                            <option value="">Select item with issue</option>
+                            {(order.items || []).map((item, i) => (
+                              <option key={i} value={item.name}>{item.name}</option>
+                            ))}
+                          </select>
+                          <textarea
+                            value={complaintForm.reason}
+                            onChange={e => setComplaintForm(f => f ? { ...f, reason: e.target.value } : f)}
+                            placeholder="Describe the issue (e.g. rotten, wrong quantity...)"
+                            rows={2}
+                            className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm font-medium focus:border-primary focus:outline-none resize-none"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              onClick={submitComplaint}
+                              disabled={submittingComplaint || !complaintForm.product || !complaintForm.reason}
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 text-white font-bold text-xs disabled:opacity-40 hover:bg-red-700 transition-colors"
+                            >
+                              <Send className="h-3 w-3" />
+                              {submittingComplaint ? "Sending..." : "Submit"}
+                            </button>
+                            <button
+                              onClick={() => setComplaintForm(null)}
+                              className="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-bold text-xs hover:bg-gray-200 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="mt-4 pt-4 border-t border-gray-50">
+                          <button
+                            onClick={() => setComplaintForm({ orderId: order.order_id, product: "", reason: "" })}
+                            className="flex items-center gap-1.5 text-xs font-bold text-red-400 hover:text-red-600 transition-colors"
+                          >
+                            <AlertTriangle className="h-3.5 w-3.5" /> Report an issue with this order
+                          </button>
                         </div>
                       )}
                     </div>

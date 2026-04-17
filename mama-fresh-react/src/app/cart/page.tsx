@@ -1,33 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
-import { Plus, Minus, Send, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Plus, Minus, Send, ShoppingBag, ArrowLeft, Clock } from "lucide-react";
 import Link from "next/link";
+import { TownCoordinator } from "@/types";
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, cartTotal, clearCart } = useCart();
-  const [orderLoading, setOrderLoading] = useState(false);
-  const [customerData, setCustomerData] = useState({
-    name: "",
-    phone: "",
-    location: "",
-    zone: "Nairobi",
-  });
+  const [orderError, setOrderError] = useState<string | null>(null);
+  
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
-  const deliveryFees: Record<string, number> = {
-    Nairobi: 200,
-    Chuka: 50,
-    Nyeri: 150,
+  const validatePhone = (phone: string) => {
+    return /^\+?1?\d{9,15}$/.test(phone);
   };
-  const deliveryFee = deliveryFees[customerData.zone] ?? 200;
+
+  useEffect(() => {
+    // 1. Fetch Delivery Zones
+    fetch(`${API}/api/towns/`)
+      .then(res => res.json())
+      .then(data => setTowns(data))
+      .catch(err => console.error("Failed to fetch towns", err));
+
+    // 2. Fetch Site Config
+    fetch(`${API}/api/config/`)
+      .then(res => res.json())
+      .then(data => setConfig(data))
+      .catch(err => console.error("Failed to fetch config", err));
+  }, [API]);
+
+  const selectedTown = towns.find(t => t.town === customerData.zone);
+  const deliveryFee = selectedTown ? parseFloat(selectedTown.delivery_fee) : 200;
 
   const formatCurrency = (value: number) => `KES ${value.toLocaleString()}`;
 
   const handleWhatsAppCheckout = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    setOrderError(null);
+
     if (!customerData.name || !customerData.phone || !customerData.location) {
-      alert("Please fill in all delivery details.");
+      setOrderError("Please fill in all delivery details.");
+      return;
+    }
+
+    if (!validatePhone(customerData.phone)) {
+      setOrderError("Please enter a valid phone number (e.g., 0712345678 or +254...).");
       return;
     }
 
@@ -35,28 +53,60 @@ export default function CartPage() {
 
     try {
       // 1. Send Order to Django Backend
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/`, {
+      const response = await fetch(`${API}/api/orders/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerName: customerData.name,
           phone: customerData.phone,
           location: customerData.location,
+          zone: customerData.zone,
           deliveryType: customerData.zone === 'Nairobi' ? 'Parcel' : 'Local',
+          is_express: isExpress,
+          referral_code: referralCode,
           cart: cart
         })
       });
 
-      if (!response.ok) throw new Error("Failed to save order");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.phone?.[0] || errorData.detail || "Failed to save order");
+      }
+      
       const data = await response.json();
 
-      // 2. Clear Cart and Redirect to Success
+      // 2. Handle Subscriptions if any
+      const subscriptions = cart.filter(item => !!item.subscription);
+      for (const subItem of subscriptions) {
+        if (!subItem.subscription) continue;
+        
+        // Find zone ID - might need to fetch IDs if towns only has names
+        // For simplicity, we'll assume the backend can handle town name or we use the 'id' from the list
+        const zoneId = towns.find(t => t.town === customerData.zone)?.id;
+        
+        await fetch(`${API}/api/subscriptions/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                customer_name: customerData.name,
+                customer_phone: customerData.phone,
+                delivery_zone: zoneId,
+                package: parseInt(subItem.subscription.packageId),
+                package_tier: subItem.subscription.tier,
+                frequency: subItem.subscription.frequency,
+                next_delivery_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+                status: 'ACTIVE'
+            })
+        });
+      }
+
+      // 3. Clear Cart and Redirect to Success
       clearCart();
       window.location.href = `/cart/success?orderId=${data.order_id}&name=${encodeURIComponent(customerData.name)}`;
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Something went wrong. Please try again or contact us on WhatsApp.");
+      setOrderError(err.message || "Something went wrong. Please try again or contact us on WhatsApp.");
     } finally {
       setOrderLoading(false);
     }
@@ -184,9 +234,10 @@ export default function CartPage() {
                       onChange={(e) => setCustomerData({ ...customerData, zone: e.target.value })}
                       className="w-full px-6 py-4 rounded-2xl bg-fresh-bg border border-transparent focus:border-primary focus:bg-white focus:outline-none transition-all font-medium appearance-none"
                     >
-                      <option>Nairobi</option>
-                      <option>Chuka</option>
-                      <option>Nyeri</option>
+                      {towns.map((town) => (
+                        <option key={town.id} value={town.town}>{town.town}</option>
+                      ))}
+                      {towns.length === 0 && <option>Nairobi</option>}
                     </select>
                   </div>
                 </div>
@@ -203,6 +254,60 @@ export default function CartPage() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Referral Code (Optional)</label>
+                  <input
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                    placeholder="Got a code from a friend?"
+                    className="w-full px-6 py-4 rounded-2xl bg-fresh-bg border border-transparent focus:border-primary focus:bg-white focus:outline-none transition-all font-medium uppercase tracking-wider"
+                    maxLength={6}
+                  />
+                  {referralCode.length > 0 && referralCode.length < 6 && (
+                    <p className="mt-1 ml-2 text-xs text-amber-500 font-medium">Codes are usually 6 characters long.</p>
+                  )}
+                </div>
+
+                <div className="bg-emerald-50 rounded-[2rem] p-6 border-2 border-emerald-100 flex items-start gap-4">
+                  <div className="h-6 w-6 mt-1 flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={isExpress}
+                      onChange={(e) => setIsExpress(e.target.checked)}
+                      className="h-6 w-6 rounded-lg text-primary focus:ring-primary border-emerald-200 cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-emerald-900 leading-none mb-1">⚡ Need it TODAY?</h4>
+                    <p className="text-xs text-emerald-700 font-medium leading-tight">
+                      Express delivery — same day by 6pm. Available for orders placed before 10am. <span className="font-black">+20% on your total</span>
+                    </p>
+                  </div>
+                </div>
+
+                {cart.some(item => !!item.subscription) && (
+                  <div className="p-6 rounded-[2rem] bg-indigo-50 border-2 border-indigo-100 flex flex-col gap-3 animate-in fade-in zoom-in duration-500">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-2xl bg-white flex items-center justify-center text-indigo-600 shadow-sm">
+                            <Clock className="h-6 w-6" />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-indigo-900 leading-none mb-1">Subscription Confirmed</h4>
+                            <p className="text-[10px] text-indigo-700 font-bold uppercase tracking-widest leading-tight">Recurring Order Setup</p>
+                        </div>
+                    </div>
+                    <div className="space-y-2 mt-2">
+                        {cart.filter(item => !!item.subscription).map(item => (
+                            <div key={item.id} className="text-sm font-medium text-indigo-800 bg-white/50 px-4 py-2 rounded-xl">
+                                {item.subscription?.frequency} delivery of <span className="font-black underline decoration-indigo-300">{item.subscription?.tier}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <p className="text-[10px] text-indigo-500 font-medium italic mt-1">First delivery scheduled for {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}. Payment instructions sent via WhatsApp.</p>
+                  </div>
+                )}
+
                 <div className="pt-6 border-t border-gray-100 space-y-3">
                   <div className="flex justify-between items-center text-sm font-medium text-gray-500">
                     <span>Subtotal</span>
@@ -212,16 +317,28 @@ export default function CartPage() {
                     <span>Delivery ({customerData.zone})</span>
                     <span className="font-bold text-gray-700">{formatCurrency(deliveryFee)}</span>
                   </div>
-                  <div className="flex justify-between items-center text-xl font-black text-gray-900 pt-2">
+                  {isExpress && (
+                    <div className="flex justify-between items-center text-sm font-black text-emerald-600">
+                      <span>Express Processing (20%)</span>
+                      <span>{formatCurrency(cartTotal * 0.2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center text-xl font-black text-gray-900 pt-2 border-t border-dashed border-gray-100">
                     <span>Total</span>
-                    <span className="text-primary">{formatCurrency(cartTotal + deliveryFee)}</span>
+                    <span className="text-primary">{formatCurrency(cartTotal + deliveryFee + (isExpress ? cartTotal * 0.2 : 0))}</span>
                   </div>
                 </div>
+
+                {orderError && (
+                  <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium animate-shake">
+                    {orderError}
+                  </div>
+                )}
 
                 <button
                   type="submit"
                   disabled={orderLoading}
-                  className="w-full mt-8 inline-flex items-center justify-center px-8 py-5 rounded-2xl bg-primary text-white font-black shadow-xl shadow-primary/30 hover:bg-emerald-700 active:scale-95 transition-all gap-2 group disabled:opacity-60"
+                  className="w-full mt-4 inline-flex items-center justify-center px-8 py-5 rounded-2xl bg-primary text-white font-black shadow-xl shadow-primary/30 hover:bg-emerald-700 active:scale-95 transition-all gap-2 group disabled:opacity-60"
                 >
                   <Send className="h-5 w-5 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                   {orderLoading ? "Placing Order..." : "Place My Order"}
@@ -229,6 +346,16 @@ export default function CartPage() {
                 <p className="text-[10px] text-gray-400 text-center font-medium mt-4 leading-tight uppercase tracking-widest px-4">
                   You will receive M-Pesa payment instructions after placing your order.
                 </p>
+
+                <div className="mt-6 bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl p-6 text-center shadow-inner border border-emerald-200">
+                   <div className="text-emerald-500 mb-2 flex justify-center">
+                     <svg className="h-8 w-8" fill="none" strokeWidth="2" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                   </div>
+                   <h4 className="text-emerald-900 font-black mb-1">Make an Impact.</h4>
+                   <p className="text-sm text-emerald-800 font-medium leading-snug">
+                     By ordering directly from rural farmers instead of a supermarket today, you are saving approximately <span className="font-black bg-emerald-200 px-1 rounded-md">4.2 kg of CO₂</span>.
+                   </p>
+                </div>
               </form>
             </div>
           </div>

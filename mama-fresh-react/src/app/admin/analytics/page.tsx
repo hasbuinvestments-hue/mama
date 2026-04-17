@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp, Users, Leaf, Trees } from "lucide-react";
+import { TrendingUp, Users, Trees, TrendingDown, Minus } from "lucide-react";
 
-interface VendorEquity {
+interface FarmerEarning {
   name: string;
   stall: string;
-  joined: string;
+  income: number;
+  orders: number;
 }
 
 interface AnalyticsData {
@@ -14,7 +15,11 @@ interface AnalyticsData {
   totalOrders: number;
   foodMilesSaved: number;
   vendorsSupported: number;
-  vendorList: VendorEquity[];
+  vendorList: { name: string; stall: string; joined: string }[];
+  thisMonthOrders: number;
+  lastMonthOrders: number;
+  momChange: number;
+  farmerEarnings: FarmerEarning[];
 }
 
 export default function AnalyticsPage() {
@@ -24,19 +29,16 @@ export default function AnalyticsPage() {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/analytics/`)
       .then(res => res.json())
-      .then(data => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to fetch analytics:", err);
-        setLoading(false);
-      });
+      .then(d => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   if (loading || !data) {
     return <div className="min-h-screen flex items-center justify-center p-6 bg-fresh-bg text-primary font-bold">Loading Impact Data...</div>;
   }
+
+  const momPositive = data.momChange > 0;
+  const momFlat = data.momChange === 0;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -48,55 +50,119 @@ export default function AnalyticsPage() {
           </h1>
           <span className="text-xs font-bold text-primary uppercase tracking-widest">Fellowship Tracker</span>
         </div>
+
         {/* Top Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white rounded-3xl p-8 border border-emerald-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-5">
-              <TrendingUp className="h-24 w-24" />
-            </div>
-            <p className="text-emerald-600 font-bold text-sm uppercase tracking-widest mb-2">Total Rural Income</p>
-            <h3 className="text-4xl font-black text-gray-900">KES {data.totalRuralIncome.toLocaleString()}</h3>
-            <p className="mt-4 text-sm text-gray-500 font-medium max-w-xs">Direct capital distributed to village farmers, completely bypassing central market brokers.</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-2xl p-6 border border-emerald-100 shadow-sm">
+            <p className="text-emerald-600 font-bold text-xs uppercase tracking-widest mb-2">Rural Income</p>
+            <h3 className="text-2xl font-black text-gray-900">KES {data.totalRuralIncome.toLocaleString()}</h3>
+            <p className="mt-1 text-xs text-gray-400">Confirmed orders only</p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 border border-amber-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-5">
-               <Leaf className="h-24 w-24" />
-            </div>
-            <p className="text-amber-600 font-bold text-sm uppercase tracking-widest mb-2">Food Miles Saved</p>
-            <h3 className="text-4xl font-black text-gray-900">{data.foodMilesSaved.toLocaleString()} km</h3>
-            <p className="mt-4 text-sm text-gray-500 font-medium max-w-xs">Estimated emissions reduction through optimized direct village-to-urban routing.</p>
+          <div className="bg-white rounded-2xl p-6 border border-amber-100 shadow-sm">
+            <p className="text-amber-600 font-bold text-xs uppercase tracking-widest mb-2">Food Miles Saved</p>
+            <h3 className="text-2xl font-black text-gray-900">{data.foodMilesSaved.toLocaleString()} km</h3>
+            <p className="mt-1 text-xs text-gray-400">~25 km per order</p>
           </div>
 
-          <div className="bg-gray-900 rounded-3xl p-8 shadow-sm relative overflow-hidden text-white">
-            <div className="absolute top-0 right-0 p-8 opacity-5">
-               <Users className="h-24 w-24 text-white" />
-            </div>
-            <p className="text-gray-400 font-bold text-sm uppercase tracking-widest mb-2">Vendors Supported</p>
-            <h3 className="text-4xl font-black text-white">{data.vendorsSupported} Active</h3>
-            <p className="mt-4 text-sm text-gray-400 font-medium max-w-xs">Mainly women and youth operating micro-farms or small village stalls.</p>
+          <div className="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm">
+            <p className="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">Total Orders</p>
+            <h3 className="text-2xl font-black text-gray-900">{data.totalOrders}</h3>
+            <p className="mt-1 text-xs text-gray-400">All time</p>
+          </div>
+
+          <div className="bg-gray-900 rounded-2xl p-6 shadow-sm text-white">
+            <p className="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">Active Farmers</p>
+            <h3 className="text-2xl font-black text-white">{data.vendorsSupported}</h3>
+            <p className="mt-1 text-xs text-gray-500">In rotation</p>
           </div>
         </div>
 
-        {/* Vendor Equity */}
-        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
-          <div className="px-8 py-6 border-b border-gray-100 bg-gray-50">
-             <h3 className="font-bold text-gray-900 flex items-center gap-2">
-               Active Vendor Roster
-             </h3>
-             <p className="text-sm text-gray-500 mt-1">Proof of inclusive economic opportunity and round-robin distribution.</p>
+        {/* Month-over-Month */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
+          <h3 className="font-black text-gray-900 mb-4">Month-over-Month Orders</h3>
+          <div className="flex items-center gap-8">
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">This Month</p>
+              <p className="text-3xl font-black text-gray-900">{data.thisMonthOrders}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Last Month</p>
+              <p className="text-3xl font-black text-gray-900">{data.lastMonthOrders}</p>
+            </div>
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-black text-lg ${
+              momFlat ? 'bg-gray-100 text-gray-500'
+              : momPositive ? 'bg-emerald-100 text-emerald-700'
+              : 'bg-red-50 text-red-600'
+            }`}>
+              {momFlat ? <Minus className="h-5 w-5" /> : momPositive ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
+              {momFlat ? 'No change' : `${momPositive ? '+' : ''}${data.momChange}%`}
+            </div>
           </div>
-          <div className="p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        </div>
+
+        {/* Per-Farmer Earnings */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-8">
+          <div className="px-6 py-5 border-b border-gray-50 bg-gray-50 flex items-center justify-between">
+            <div>
+              <h3 className="font-black text-gray-900">Per-Farmer Earnings</h3>
+              <p className="text-xs text-gray-500 mt-0.5">From confirmed orders only — direct income attribution</p>
+            </div>
+            <TrendingUp className="h-5 w-5 text-primary" />
+          </div>
+
+          {data.farmerEarnings.length === 0 ? (
+            <div className="p-8 text-center text-gray-400 text-sm">
+              No confirmed orders yet — earnings will appear here once orders are marked confirmed.
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-50">
+              {data.farmerEarnings.map((farmer, i) => {
+                const maxIncome = data.farmerEarnings[0]?.income || 1;
+                const pct = Math.round((farmer.income / maxIncome) * 100);
+                return (
+                  <div key={i} className="px-6 py-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center font-black text-primary text-sm flex-shrink-0">
+                          {farmer.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-900 text-sm">{farmer.name}</p>
+                          <p className="text-xs text-gray-400">{farmer.stall} · {farmer.orders} order{farmer.orders !== 1 ? 's' : ''}</p>
+                        </div>
+                      </div>
+                      <span className="font-black text-gray-900">KES {farmer.income.toLocaleString()}</span>
+                    </div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Active Vendor Roster */}
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+          <div className="px-6 py-5 border-b border-gray-50 bg-gray-50">
+            <h3 className="font-black text-gray-900 flex items-center gap-2">
+              <Users className="h-4 w-4 text-primary" /> Active Vendor Roster
+            </h3>
+            <p className="text-xs text-gray-500 mt-0.5">Round-robin distribution proof for fellowship reporting.</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {data.vendorList.map((v, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-fresh-bg/50 border border-emerald-50">
-                   <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center font-black text-primary flex-shrink-0">
-                     {v.name.charAt(0)}
-                   </div>
-                   <div>
-                     <h4 className="font-bold text-gray-900 text-sm">{v.name}</h4>
-                     <p className="text-xs text-gray-500">{v.stall}</p>
-                   </div>
+                <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-fresh-bg/50 border border-emerald-50">
+                  <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center font-black text-primary flex-shrink-0">
+                    {v.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900 text-sm">{v.name}</p>
+                    <p className="text-xs text-gray-500">{v.stall}</p>
+                  </div>
                 </div>
               ))}
             </div>

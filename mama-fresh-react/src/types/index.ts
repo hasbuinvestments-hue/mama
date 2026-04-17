@@ -35,6 +35,7 @@ export interface Product {
   villageSourced?: boolean;
   imageUrl?: string;
   imageLabel?: string;
+  isAvailable?: boolean;
 }
 
 export interface Collection {
@@ -63,4 +64,47 @@ export interface CartItem {
   unit: string;
   price: number;
   quantity: number;
+  subscription?: {
+    frequency: string;
+    tier: string;
+    packageId: string;
+  };
+}
+
+export interface TownCoordinator {
+  id: number;
+  town: string;
+  coordinator_name: string;
+  whatsapp_number: string;
+  pin: string;
+  delivery_fee: string;
+  is_active: boolean;
+}
+
+export interface OrderBatch {
+  id: number;
+  batch_date: string;
+  status: 'OPEN' | 'DISPATCHED' | 'DELIVERED';
+  is_express: boolean;
+  created_at: string;
+  dispatched_at?: string;
+  notes?: string;
+  pickup_confirmed_at?: string;
+  arrived_nairobi_at?: string;
+  dispatched_to_customers_at?: string;
+}
+
+export interface BatchVendorAssignment {
+  id: number;
+  batch: number;
+  town: string;
+  vendor_name: string;
+  vendor_whatsapp: string;
+  product_name: string;
+  unit: string;
+  quantity: number;
+  source_town: string;
+  is_absent: boolean;
+  reassigned_product?: string;
+  whatsapp_sent: boolean;
 }

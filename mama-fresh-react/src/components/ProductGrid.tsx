@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
-import { ShoppingCart, Star, Leaf, Plus } from "lucide-react";
+import { Star, Leaf, Plus, Search } from "lucide-react";
 
 interface ProductGridProps {
   products: Product[];
@@ -15,12 +15,14 @@ interface ProductGridProps {
 export function ProductGrid({ products, title, limit, showFilters = false }: ProductGridProps) {
   const { addToCart } = useCart();
   const [activeCategory, setActiveCategory] = useState("All");
+  const [search, setSearch] = useState("");
 
   const categories = ["All", ...new Set(products.map((p) => p.category))];
 
   const filteredProducts = products.filter((p) => {
-    if (activeCategory === "All") return true;
-    return p.category === activeCategory;
+    const matchesCategory = activeCategory === "All" || p.category === activeCategory;
+    const matchesSearch = !search.trim() || p.name.toLowerCase().includes(search.toLowerCase());
+    return matchesCategory && matchesSearch;
   });
 
   const displayProducts = limit ? filteredProducts.slice(0, limit) : filteredProducts;
@@ -39,20 +41,34 @@ export function ProductGrid({ products, title, limit, showFilters = false }: Pro
           </div>
 
           {showFilters && (
-            <div className="flex flex-wrap gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
-                    activeCategory === cat
-                      ? "bg-primary text-white shadow-lg shadow-primary/20"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div className="flex flex-col gap-3 w-full md:w-auto">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full md:w-64 pl-9 pr-4 py-2.5 rounded-xl bg-gray-100 border border-transparent focus:border-primary focus:bg-white focus:outline-none text-sm font-medium transition-all"
+                />
+              </div>
+              {/* Category filters */}
+              <div className="flex flex-wrap gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
+                      activeCategory === cat
+                        ? "bg-primary text-white shadow-lg shadow-primary/20"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -62,20 +78,31 @@ export function ProductGrid({ products, title, limit, showFilters = false }: Pro
             const hasSale = !!product.salePrice;
             const price = product.salePrice || product.price;
 
+            const isAvailable = product.isAvailable !== false;
+
             return (
               <article
                 key={product.id}
-                className="group relative flex flex-col bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-300"
+                className={`group relative flex flex-col bg-white rounded-3xl border overflow-hidden transition-all duration-300 ${
+                  isAvailable
+                    ? "border-gray-100 hover:shadow-2xl hover:shadow-gray-200/50"
+                    : "border-gray-100 opacity-60"
+                }`}
               >
                 {/* Badges */}
                 <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-                  {product.topSeller && (
+                  {!isAvailable && (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-800 text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
+                      Out of Stock
+                    </span>
+                  )}
+                  {isAvailable && product.topSeller && (
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-secondary text-gray-900 text-[10px] font-black uppercase tracking-wider shadow-sm">
                       <Star className="h-3 w-3 fill-current" />
                       Top Seller
                     </span>
                   )}
-                  {hasSale && (
+                  {isAvailable && hasSale && (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-accent text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
                       Sale
                     </span>
@@ -120,8 +147,13 @@ export function ProductGrid({ products, title, limit, showFilters = false }: Pro
                     </div>
 
                     <button
-                      onClick={() => addToCart({ ...product, price })}
-                      className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 hover:bg-emerald-700 active:scale-95 transition-all group/btn"
+                      onClick={() => isAvailable && addToCart({ ...product, price })}
+                      disabled={!isAvailable}
+                      className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg transition-all group/btn ${
+                        isAvailable
+                          ? "bg-primary text-white shadow-primary/20 hover:bg-emerald-700 active:scale-95"
+                          : "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
+                      }`}
                     >
                       <Plus className="h-6 w-6 group-hover/btn:rotate-90 transition-transform duration-300" />
                     </button>

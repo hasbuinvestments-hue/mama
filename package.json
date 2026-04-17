@@ -1,0 +1,14 @@
+{
+  "name": "mama-fresh-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo for Mama Fresh Logistics & Impact Platform",
+  "scripts": {
+    "install:all": "npm install --prefix mama-fresh-react && pip install -r mama-fresh-backend/requirements.txt",
+    "dev:frontend": "npm run dev --prefix mama-fresh-react",
+    "dev:backend": "cd mama-fresh-backend && ./venv/Scripts/python manage.py runserver",
+    "dev": "concurrently -n \"next,django\" -c \"magenta,cyan\" \"npm run dev:frontend\" \"npm run dev:backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}

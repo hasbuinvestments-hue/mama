@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   ShoppingCart, Package, BarChart2, MessageSquare,
   LayoutGrid, Blend, Users, ShoppingBag, Store,
+  Truck, MapPin, AlertTriangle, Clock
 } from "lucide-react";
 
 const navItems = [
@@ -16,6 +17,11 @@ const navItems = [
   { href: "/admin/mixes",        label: "Mixes",         icon: Blend },
   { href: "/admin/testimonials", label: "Testimonials",  icon: MessageSquare },
   { href: "/admin/analytics",    label: "Analytics",     icon: BarChart2 },
+  { href: "/admin/dispatch",     label: "Dispatch",      icon: Truck },
+  { href: "/admin/coordinators", label: "Towns",         icon: MapPin },
+  { href: "/admin/couriers",     label: "Couriers",      icon: Truck },
+  { href: "/admin/subscriptions", label: "Subscriptions", icon: Clock },
+  { href: "/admin/complaints",   label: "Complaints",    icon: AlertTriangle },
 ];
 
 export function AdminNav() {

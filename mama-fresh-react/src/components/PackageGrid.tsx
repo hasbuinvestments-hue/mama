@@ -14,18 +14,27 @@ export function PackageGrid({ packages }: PackageGridProps) {
   const [selectedTiers, setSelectedTiers] = useState<Record<string, number>>({});
   const [added, setAdded] = useState<Record<string, boolean>>({});
   const [previewPkg, setPreviewPkg] = useState<{pkg: Package, tierIndex: number} | null>(null);
+  const [subscribed, setSubscribed] = useState<Record<string, boolean>>({});
+  const [frequency, setFrequency] = useState<Record<string, string>>({});
 
   const formatCurrency = (value: number) => `KES ${value.toLocaleString()}`;
 
   const handleAddToCart = (pkg: Package) => {
     const tierIndex = selectedTiers[pkg.id] ?? 0;
     const tier = pkg.pricing[tierIndex];
+    const isSub = subscribed[pkg.id];
+    const freq = frequency[pkg.id] || 'WEEKLY';
+    
+    // Apply 5% discount if subscribed
+    const price = isSub ? tier.price * 0.95 : tier.price;
+
     addToCart({
-      id: `${pkg.id}-${tierIndex}`,
-      name: `${pkg.name} — ${tier.label}`,
-      price: tier.price,
+      id: `${pkg.id}-${tierIndex}${isSub ? '-sub' : ''}`,
+      name: `${pkg.name} — ${tier.label}${isSub ? ` (${freq} Subscription)` : ''}`,
+      price: price,
       unit: "package",
       category: "Package",
+      subscription: isSub ? { frequency: freq, tier: tier.label, packageId: pkg.id } : undefined
     });
     setAdded(prev => ({ ...prev, [pkg.id]: true }));
     setTimeout(() => setAdded(prev => ({ ...prev, [pkg.id]: false })), 2000);
@@ -113,6 +122,45 @@ export function PackageGrid({ packages }: PackageGridProps) {
                       </div>
                     ))}
                   </div>
+
+                  {/* Subscribe & Save for Nyumbani */}
+                  {pkg.name.toLowerCase().includes("nyumbani") && (
+                    <div className="mb-8 p-6 bg-emerald-50 rounded-[2rem] border-2 border-emerald-100 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <div className="flex items-center justify-between mb-4">
+                            <label className="flex items-center gap-3 cursor-pointer">
+                                <div className="relative">
+                                    <input 
+                                        type="checkbox" 
+                                        className="sr-only peer"
+                                        checked={!!(added[pkg.id + '-sub'])} // Using 'added' state temporarily to drive UI or custom state
+                                        onChange={(e) => setSubscribed(prev => ({ ...prev, [pkg.id]: e.target.checked }))}
+                                    />
+                                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </div>
+                                <span className="text-sm font-black text-emerald-900 leading-none">Subscribe & Save 5%</span>
+                            </label>
+                            <span className="px-2 py-0.5 rounded-md bg-white text-[10px] font-bold text-primary border border-primary/20 shadow-sm animate-pulse">POPULAR</span>
+                        </div>
+                        
+                        {subscribed[pkg.id] && (
+                            <div className="flex gap-2">
+                                {['WEEKLY', 'MONTHLY'].map(freq => (
+                                    <button
+                                        key={freq}
+                                        onClick={() => setFrequency(prev => ({ ...prev, [pkg.id]: freq }))}
+                                        className={`flex-grow py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                            (frequency[pkg.id] || 'WEEKLY') === freq 
+                                            ? 'bg-primary text-white shadow-md' 
+                                            : 'bg-white text-emerald-700 hover:bg-emerald-100'
+                                        }`}
+                                    >
+                                        {freq}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                  )}
 
                   <button
                     onClick={() => setPreviewPkg({ pkg, tierIndex: selectedTierIndex })}

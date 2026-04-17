@@ -31,6 +31,8 @@ export function Header() {
             <Link href="/packages" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Packages</Link>
             <Link href="/farmers" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Meet the Farmers</Link>
             <Link href="/about" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">About</Link>
+            <Link href="/impact" className="text-sm font-semibold text-primary hover:text-emerald-700 transition-colors">Our Impact</Link>
+            <Link href="/verify" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Verify Impact</Link>
             <Link href="/orders/history" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">My Orders</Link>
           </nav>
 
@@ -66,6 +68,7 @@ export function Header() {
             <Link href="/packages" onClick={() => setIsMenuOpen(false)} className="text-base font-medium text-gray-900 px-2 py-1">Packages</Link>
             <Link href="/testimonials" onClick={() => setIsMenuOpen(false)} className="text-base font-medium text-gray-900 px-2 py-1">Testimonials</Link>
             <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-base font-medium text-gray-900 px-2 py-1">About</Link>
+            <Link href="/impact" onClick={() => setIsMenuOpen(false)} className="text-base font-medium text-primary px-2 py-1">Our Impact</Link>
             <Link href="/orders/history" onClick={() => setIsMenuOpen(false)} className="text-base font-medium text-gray-900 px-2 py-1">My Orders</Link>
           </nav>
         )}

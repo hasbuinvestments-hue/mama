@@ -1,8 +1,7 @@
 import { Hero } from "@/components/Hero";
 import { ProductGrid } from "@/components/ProductGrid";
 import { PackageGrid } from "@/components/PackageGrid";
-import siteConfig from "@/data/site-config.json";
-import { Product, Package } from "@/types";
+import { Product, Package, Testimonial } from "@/types";
 import { Leaf, Users, ShieldCheck } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
@@ -13,6 +12,22 @@ async function getAnalytics() {
     if (!res.ok) return null;
     return res.json();
   } catch { return null; }
+}
+
+async function getConfig() {
+  try {
+    const res = await fetch(`${API}/api/config/`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return res.json();
+  } catch { return null; }
+}
+
+async function getTestimonials(): Promise<Testimonial[]> {
+  try {
+    const res = await fetch(`${API}/api/testimonials/`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return res.json();
+  } catch { return []; }
 }
 
 async function getProducts(): Promise<Product[]> {
@@ -31,6 +46,7 @@ async function getProducts(): Promise<Product[]> {
       topSeller: item.is_top_seller,
       villageSourced: true,
       imageUrl: item.image_url,
+      isAvailable: item.is_available !== false,
     }));
   } catch { return []; }
 }
@@ -58,19 +74,41 @@ async function getPackages(): Promise<Package[]> {
 }
 
 export default async function Home() {
-  const [analytics, products, packages] = await Promise.all([
+  const [analytics, products, packages, config] = await Promise.all([
     getAnalytics(),
     getProducts(),
     getPackages(),
+    getConfig(),
   ]);
+
+  const isDown = products.length === 0 && packages.length === 0;
+
+  if (isDown) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-fresh-bg">
+        <div className="text-center max-w-lg">
+          <div className="h-20 w-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Leaf className="h-10 w-10 text-primary animate-pulse" />
+          </div>
+          <h1 className="text-4xl font-black text-gray-900 mb-6 underline decoration-primary/30 decoration-8 underline-offset-4">Back in a moment!</h1>
+          <p className="text-lg text-gray-600 mb-10 font-medium">
+            We're currently updating our farm inventory to ensure everything you see is freshly harvested. Our village vendors are syncing their stalls.
+          </p>
+          <a href="https://wa.me/254792705921" className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold shadow-xl">
+             Chat with us on WhatsApp
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const bestSellers = products.filter(p => p.topSeller);
 
   const impactStats = {
-    farmers: analytics ? `${analytics.vendorsSupported}+` : siteConfig.impact.farmers,
-    families: siteConfig.impact.families,
+    farmers: analytics ? `${analytics.vendorsSupported}+` : (config?.impact_farmers_override || "40+"),
+    families: analytics ? `${analytics.familiesServed}+` : (config?.impact_families_override || "200+"),
     miles: analytics ? analytics.foodMilesSaved : 0,
-    location: siteConfig.impact.location,
+    location: "Kenya",
   };
 
   return (

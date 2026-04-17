@@ -21,6 +21,7 @@ interface Product {
   sale_price: string;
   image_url: string;
   is_top_seller: boolean;
+  source_town: string;
 }
 
 const emptyProduct = (): Product => ({
@@ -31,6 +32,7 @@ const emptyProduct = (): Product => ({
   sale_price: "",
   image_url: "",
   is_top_seller: false,
+  source_town: "",
 });
 
 export default function AdminProductsPage() {
@@ -45,7 +47,7 @@ export default function AdminProductsPage() {
   const fetchAll = async () => {
     try {
       const [pRes, cRes] = await Promise.all([
-        fetch(`${API}/api/products/`),
+        fetch(`${API}/api/admin/products/`),
         fetch(`${API}/api/categories/`),
       ]);
       const [pData, cData] = await Promise.all([pRes.json(), cRes.json()]);
@@ -168,6 +170,11 @@ export default function AdminProductsPage() {
                               <Star className="h-2.5 w-2.5" /> Top
                             </span>
                           )}
+                          {product.source_town && (
+                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-[10px] font-black">
+                              {product.source_town}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </td>
@@ -247,6 +254,16 @@ export default function AdminProductsPage() {
                     value={form.unit}
                     onChange={e => setForm(f => f ? { ...f, unit: e.target.value } : f)}
                     placeholder="e.g. kg, bunch, piece"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-primary focus:outline-none font-medium"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Source Town</label>
+                  <input
+                    value={form.source_town}
+                    onChange={e => setForm(f => f ? { ...f, source_town: e.target.value } : f)}
+                    placeholder="e.g. Meru, Mwea, Nakuru"
                     className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-primary focus:outline-none font-medium"
                   />
                 </div>

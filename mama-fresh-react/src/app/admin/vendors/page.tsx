@@ -13,6 +13,7 @@ interface Vendor {
   bio: string;
   profile_image: string;
   is_active: boolean;
+  is_verified: boolean;
 }
 
 const emptyVendor = (): Vendor => ({
@@ -22,6 +23,7 @@ const emptyVendor = (): Vendor => ({
   bio: "",
   profile_image: "",
   is_active: true,
+  is_verified: true,
 });
 
 export default function AdminVendorsPage() {
@@ -121,6 +123,11 @@ export default function AdminVendorsPage() {
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase flex-shrink-0 ${vendor.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                         {vendor.is_active ? 'Active' : 'Inactive'}
                       </span>
+                      {!vendor.is_verified && (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase flex-shrink-0 border border-amber-200">
+                          Pending Approval
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm text-gray-500">{vendor.stall_number}</p>
                     <p className="text-xs text-gray-400">{vendor.whatsapp_number}</p>
@@ -132,10 +139,25 @@ export default function AdminVendorsPage() {
                 <div className="flex gap-3 px-6 pb-6 pt-2 border-t border-gray-50">
                   <button
                     onClick={() => setForm({ ...vendor })}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors"
                   >
                     <Pencil className="h-4 w-4" /> Edit
                   </button>
+                  {!vendor.is_verified && (
+                    <button
+                      onClick={async () => {
+                        await fetch(`${API}/api/vendors/${vendor.id}/`, {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ is_verified: true }),
+                        });
+                        fetchVendors();
+                      }}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-primary text-white font-bold text-sm hover:bg-emerald-700 transition-colors"
+                    >
+                      <Check className="h-4 w-4" /> Approve
+                    </button>
+                  )}
                   <button
                     onClick={() => setDeleteId(vendor.id!)}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition-colors"

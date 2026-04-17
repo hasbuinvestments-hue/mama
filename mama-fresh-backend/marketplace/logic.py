@@ -19,11 +19,11 @@ def assign_vendors_to_order(cart_items):
 
     # For each category, pick a primary and secondary vendor
     for cat_name, items in items_by_category.items():
-        # Find vendors that sell this category, ordered by last_assigned_at (Round Robin)
+        # Find vendors that sell this category, ordered by misses_count then last_assigned_at 
         eligible_vendors = Vendor.objects.filter(
             categories__name=cat_name, 
             is_active=True
-        ).order_by('last_assigned_at')
+        ).order_by('misses_count', 'last_assigned_at')
 
         if not eligible_vendors.exists():
             # Fallback for no vendor found

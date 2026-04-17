@@ -10,15 +10,29 @@ from .views import (
     TestimonialListView, AdminTestimonialListView, TestimonialDetailView,
     CollectionListView, AdminCollectionListView, CollectionDetailView,
     MixListView, MixDetailView,
+    TownCoordinatorListView, TownCoordinatorDetailView,
+    CoordinatorLoginView, BatchCreateView, BatchListView,
+    BatchDetailView, BatchAssignmentsView, AssignmentUpdateView,
+    RebalanceView, CoordinatorDashboardView, DispatchBatchView,
+    CourierListView, CourierDetailView, HarvestCalendarView,
+    ComplaintCreateView, ComplaintDetailView,
+    ReferralCodeDetailView, BatchTrackingUpdateView,
+    SiteConfigView, SubscriptionListCreateView, SubscriptionDetailView,
+    OrderTransparencyView, CourierBatchListView,
 )
 
 urlpatterns = [
     # Public endpoints
+    path('config/', SiteConfigView.as_view(), name='site-config'),
+    path('subscriptions/', SubscriptionListCreateView.as_view(), name='subscription-list'),
+    path('orders/<str:order_id>/transparency/', OrderTransparencyView.as_view(), name='order-transparency'),
+    path('courier/batches/', CourierBatchListView.as_view(), name='courier-batch-list'),
     path('orders/', OrderCreateView.as_view(), name='order-create'),
     path('orders/history/', CustomerOrderHistoryView.as_view(), name='order-history'),
     path('vendors/', VendorListView.as_view(), name='vendor-list'),
     path('vendors/<int:pk>/', VendorDetailView.as_view(), name='vendor-detail'),
     path('categories/', CategoryListView.as_view(), name='category-list'),
+    path('towns/', TownCoordinatorListView.as_view(), name='town-list'),
     path('products/', ProductListView.as_view(), name='product-list'),
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('packages/', PackageListCreateView.as_view(), name='package-list'),
@@ -27,6 +41,8 @@ urlpatterns = [
     path('mixes/', MixListView.as_view(), name='mix-list'),
 
     # Admin endpoints
+    path('admin/products/', ProductListView.as_view(), name='admin-product-list'),
+    path('admin/vendors/', VendorListView.as_view(), name='admin-vendor-list'),
     path('admin/orders/', AdminOrderListView.as_view(), name='admin-order-list'),
     path('admin/orders/<str:order_id>/', OrderDetailView.as_view(), name='admin-order-detail'),
     path('admin/analytics/', AnalyticsView.as_view(), name='admin-analytics'),
@@ -38,4 +54,28 @@ urlpatterns = [
     path('admin/collections/<int:pk>/', CollectionDetailView.as_view(), name='admin-collection-detail'),
     path('admin/mixes/', MixListView.as_view(), name='admin-mix-list'),
     path('admin/mixes/<int:pk>/', MixDetailView.as_view(), name='admin-mix-detail'),
+
+    # Logistics endpoints
+    path('admin/coordinators/', TownCoordinatorListView.as_view(), name='coordinator-list'),
+    path('admin/coordinators/<int:pk>/', TownCoordinatorDetailView.as_view(), name='coordinator-detail'),
+    path('admin/batches/', BatchListView.as_view(), name='batch-list'),
+    path('admin/batches/create/', BatchCreateView.as_view(), name='batch-create'),
+    path('admin/batches/<int:pk>/', BatchDetailView.as_view(), name='batch-detail'),
+    path('admin/batches/<int:pk>/assignments/', BatchAssignmentsView.as_view(), name='batch-assignments'),
+    path('admin/batches/<int:pk>/dispatch/', DispatchBatchView.as_view(), name='batch-dispatch'),
+    path('admin/batches/<int:pk>/rebalance/', RebalanceView.as_view(), name='batch-rebalance'),
+    path('admin/assignments/<int:pk>/', AssignmentUpdateView.as_view(), name='assignment-update'),
+    path('coordinator/login/', CoordinatorLoginView.as_view(), name='coordinator-login'),
+    path('coordinator/dashboard/', CoordinatorDashboardView.as_view(), name='coordinator-dashboard'),
+    
+    # Advanced features
+    path('referral/', ReferralCodeDetailView.as_view(), name='referral-code'),
+    path('couriers/', CourierListView.as_view(), name='courier-list'),
+    path('couriers/<int:pk>/', CourierDetailView.as_view(), name='courier-detail'),
+    path('harvests/', HarvestCalendarView.as_view(), name='harvest-calendar'),
+    path('complaints/', ComplaintCreateView.as_view(), name='complaint-list-create'),
+    path('complaints/<int:pk>/', ComplaintDetailView.as_view(), name='complaint-detail'),
+    path('admin/batches/<int:pk>/tracking/', BatchTrackingUpdateView.as_view(), name='batch-tracking'),
+    path('admin/batches/<int:pk>/seal/', BatchSealView.as_view(), name='batch-seal'),
+    path('admin/assignments/<int:pk>/hub-verify/', BatchAssignmentVerifyView.as_view(), name='assignment-hub-verify'),
 ]
